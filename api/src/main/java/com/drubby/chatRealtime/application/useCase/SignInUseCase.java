@@ -1,8 +1,8 @@
 package com.drubby.chatRealtime.application.useCase;
 
 
-import com.drubby.chatRealtime.application.error.SignInError;
-import com.drubby.chatRealtime.application.error.SignInErrorMsg;
+import com.drubby.chatRealtime.application.error.AuthError;
+import com.drubby.chatRealtime.application.error.AuthErrorMsg;
 import com.drubby.chatRealtime.application.http.response.msg.AuthMessage;
 import com.drubby.chatRealtime.domain.service.SignInService;
 import com.drubby.chatRealtime.infrastructure.security.CustomUserDetail;
@@ -31,7 +31,7 @@ public class SignInUseCase implements SignInService {
         UserDetails user = userDaoDetailsServiceImpl.customLoadUserByEmail(authBodyRequest.getEmail(), null);
 
         if (!passwordEncoder.matches(authBodyRequest.getPassword(), user.getPassword())) {
-            throw new SignInError(SignInErrorMsg.INVALID_CREDENTIALS);
+            throw new AuthError(AuthErrorMsg.INVALID_CREDENTIALS);
         }
 
         String token = JwtUtil.createToken((CustomUserDetail) user);

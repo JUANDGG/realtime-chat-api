@@ -25,13 +25,12 @@ public abstract class JwtUtil {
     public static String createToken(CustomUserDetail customUserDetails) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
         Long idUser = customUserDetails.getUserId();
-        String userName = customUserDetails.getUsername();
         String email = customUserDetails.getEmail();
         String authorities =customUserDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         return JWT.create()
                 .withJWTId(idUser.toString())
                 .withIssuer(USER_GENERATED)
-                .withSubject(userName)
+                .withSubject(email)
                 .withClaim("authorities", authorities)
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + Long.parseLong(TIME_EXPIRATION)))

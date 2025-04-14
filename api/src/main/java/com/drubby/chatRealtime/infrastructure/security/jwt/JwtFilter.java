@@ -1,26 +1,25 @@
 package com.drubby.chatRealtime.infrastructure.security.jwt;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.filter.OncePerRequestFilter;
-import java.io.IOException;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 import java.util.Collection;
 
 
 @Service
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter implements WebFilter {
 
-    @Override
+
+    /*
+    *  @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String tokenRequest = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -46,5 +45,28 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
 
+    }
+    * */
+
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        ServerHttpRequest request = exchange.getRequest();
+        String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+
+        if (authHeader != null ) {
+            String token = authHeader.substring(7);
+            DecodedJWT decodedJWT = JwtUtil.validateAndDecodifiedToken(token);
+
+            String username = JwtUtil.getClaim(decodedJWT, "name").asString();
+            String authorities = JwtUtil.getClaim(decodedJWT, "authorities").asString();
+
+            Collection grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, grantedAuthorities);
+
+            return chain.filter(exchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
+        }
+
+        return chain.filter(exchange);
     }
 }

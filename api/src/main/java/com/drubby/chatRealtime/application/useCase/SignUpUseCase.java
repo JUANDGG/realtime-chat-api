@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class SignUpUseCase implements SignUpService {
     private final UserDaoDetailsUseCase userDaoDetailsServiceImpl;
@@ -27,6 +29,11 @@ public class SignUpUseCase implements SignUpService {
         UserDetails user = userDaoDetailsServiceImpl.customLoadUserByEmail(null , UserEntity.builder().email(authBodyRequest.getEmail())
                 .email(authBodyRequest.getEmail())
                 .passwordHash(passwordEncoder.encode(authBodyRequest.getPassword()))
+                .createdAt(LocalDateTime.now())
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .accountNonExpired(true)
+                .enabled(true)
                 .build());
         String token = JwtUtil.createToken((CustomUserDetail) user);
         return new AuthResponse(AuthMessage.USER_REGISTERED.getMessage() ,token , HttpStatus.ACCEPTED);

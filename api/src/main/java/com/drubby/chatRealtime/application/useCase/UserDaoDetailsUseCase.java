@@ -1,7 +1,7 @@
 package com.drubby.chatRealtime.application.useCase;
 
-import com.drubby.chatRealtime.application.error.SignInError;
-import com.drubby.chatRealtime.application.error.SignInErrorMsg;
+import com.drubby.chatRealtime.application.error.AuthError;
+import com.drubby.chatRealtime.application.error.AuthErrorMsg;
 import com.drubby.chatRealtime.domain.entity.UserEntity;
 import com.drubby.chatRealtime.infrastructure.repository.UserRepository;
 import com.drubby.chatRealtime.infrastructure.security.CreateUserDetail;
@@ -36,24 +36,29 @@ public class UserDaoDetailsUseCase implements  UserDetailsService {
         return  CreateUserDetail.createUserDetails(userEntity.get(),authorities);
 
     }
-
     public UserDetails customLoadUserByEmail(String userNameEmail , UserEntity userEntity )  {
-        if(userEntity == null){
+        if(userNameEmail !=null && userEntity == null){
             Optional<UserEntity> userFindByEmail = userRepository.findByEmail(userNameEmail);
             if (userFindByEmail.isPresent()) {
                 return loadUserByUsername(userFindByEmail.get().getEmail());
             } else {
-                throw  new SignInError(SignInErrorMsg.USER_NOT_FOUND);
+                throw  new AuthError(AuthErrorMsg.USER_NOT_FOUND);
+            }
+        }
+        Optional<UserEntity> userFindByEmail = userRepository.findByEmail(userEntity.getEmail());
+        if(userNameEmail==null && userEntity != null){
+            if(userFindByEmail.isPresent()) {
+                throw new AuthError(AuthErrorMsg.USER_AS_READY_EXISTS);
+            }
+            else {
+                userRepository.save(userEntity);
+                return loadUserByUsername(userEntity.getEmail());
             }
         }
 
-        Optional<UserEntity> userFindByEmail = userRepository.findByEmail(userEntity.getEmail());
-        if (userFindByEmail.isPresent()) {
-            return loadUserByUsername(userFindByEmail.get().getEmail());
-        } else {
-            userRepository.save(userEntity);
-            return loadUserByUsername(userEntity.getEmail());
-        }
+        throw new AuthError(AuthErrorMsg.USER_NOT_FOUND);
+
     }
+
 
 }

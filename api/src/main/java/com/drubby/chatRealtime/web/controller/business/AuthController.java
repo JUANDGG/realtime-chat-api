@@ -3,11 +3,10 @@ package com.drubby.chatRealtime.web.controller.business;
 import com.drubby.chatRealtime.application.http.request.AuthBodyRequest;
 import com.drubby.chatRealtime.domain.service.SignInService;
 import com.drubby.chatRealtime.domain.service.SignUpService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -21,13 +20,13 @@ public class AuthController {
         this.signUpService = signUpService;
     }
 
-    @GetMapping
-    public ResponseEntity<?> signIn (@RequestBody AuthBodyRequest authBodyRequest) {
+    @PostMapping("sign-in")
+    public ResponseEntity<?> signIn (@RequestBody @Validated AuthBodyRequest authBodyRequest) {
         return ResponseEntity.ok(signInService.signIn(authBodyRequest));
     }
 
-    @GetMapping
-    public ResponseEntity<?> signUp (@RequestBody AuthBodyRequest authBodyRequest) {
+    @PostMapping("sign-up")
+    public ResponseEntity<?> signUp (@RequestBody  @Validated AuthBodyRequest authBodyRequest) {
         return ResponseEntity.ok(signUpService.signUp(authBodyRequest));
     }
 }
