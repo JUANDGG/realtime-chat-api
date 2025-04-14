@@ -11,15 +11,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "'user'")
 public class UserEntity {
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
-
-    @Column(name = "user_name", unique = true , nullable = false , length = 30)
-    private String username;
 
     @Column(unique = true , nullable = false , length = 150)
     private String email;
@@ -30,15 +27,16 @@ public class UserEntity {
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
     private LocalDateTime createdAt;
 
-    @Column(name ="account_non_expired" )
+    @Column(name ="account_non_expired",nullable = false)
     private boolean  accountNonExpired ;
 
-    @Column(name ="account_non_locked" )
+    @Column(name ="account_non_locked",nullable = false)
     private boolean accountNonLocked ;
 
-    @Column(name ="credentials_non_expired" )
+    @Column(name ="credentials_non_expired",nullable = false)
     private boolean credentialsNonExpired ;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean enabled ;
 }
 

@@ -1,4 +1,4 @@
-package com.drubby.chatRealtime.domain.auth;
+package com.drubby.chatRealtime.infrastructure.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.drubby.chatRealtime.infrastructure.security.CustomUserDetail;
 import org.springframework.security.core.GrantedAuthority;
 import java.util.Date;
 import java.util.Map;
@@ -21,7 +22,7 @@ public abstract class JwtUtil {
     private static String USER_GENERATED = "drubbyService";
 
 
-    public static String createToken(CustomUserDetails customUserDetails) {
+    public static String createToken(CustomUserDetail customUserDetails) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
         Long idUser = customUserDetails.getUserId();
         String userName = customUserDetails.getUsername();

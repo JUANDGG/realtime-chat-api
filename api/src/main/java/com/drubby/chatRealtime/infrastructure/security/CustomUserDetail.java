@@ -1,34 +1,26 @@
-package com.drubby.chatRealtime.domain.auth;
+package com.drubby.chatRealtime.infrastructure.security;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
 
 
-public class CustomUserDetails extends User {
+public class CustomUserDetail extends User {
     private Long userId;
-    private String username;
 
-    public CustomUserDetails(Long userId, String username, String email, String password,
-                             boolean enabled, boolean accountNonExpired,
-                             boolean credentialsNonExpired, boolean accountNonLocked,
-                             Collection<? extends GrantedAuthority> authorities) {
+
+    public CustomUserDetail(Long userId , String email, String password,
+                            boolean enabled, boolean accountNonExpired,
+                            boolean credentialsNonExpired, boolean accountNonLocked,
+                            Collection<? extends GrantedAuthority> authorities) {
         super(email, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.userId = userId;
-        this.username = username;
     }
 
 
     public Long getUserId() {
         return this.userId;
-    }
-
-
-    public String getUsername() {
-        return this.username;
     }
 
 

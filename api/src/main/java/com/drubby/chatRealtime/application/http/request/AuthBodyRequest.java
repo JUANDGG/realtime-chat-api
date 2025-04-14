@@ -1,4 +1,4 @@
-package com.drubby.chatRealtime.domain.http.request;
+package com.drubby.chatRealtime.application.http.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

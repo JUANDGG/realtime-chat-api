@@ -1,5 +1,5 @@
-package com.drubby.chatRealtime.domain.config.security.providers;
-import com.drubby.chatRealtime.domain.auth.UserDaoDetailsServiceImpl;
+package com.drubby.chatRealtime.infrastructure.security.providers;
+import com.drubby.chatRealtime.application.useCase.UserDaoDetailsUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,9 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class DaoAuthProvider {
-    private final UserDaoDetailsServiceImpl userDaoDetailsServiceImpl ;
+    private final UserDaoDetailsUseCase userDaoDetailsServiceImpl ;
 
-    public DaoAuthProvider(UserDaoDetailsServiceImpl userDaoDetailsServiceImpl) {
+    public DaoAuthProvider(UserDaoDetailsUseCase userDaoDetailsServiceImpl) {
         this.userDaoDetailsServiceImpl =userDaoDetailsServiceImpl ;
     }
 
